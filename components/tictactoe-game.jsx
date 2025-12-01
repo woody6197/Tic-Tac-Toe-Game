@@ -230,7 +230,7 @@ function TicTacToe() {
         onClick={restartGame}
         className="mt-6 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
       >
-        Restart
+        Play again!
       </button>
     </div>
   );
