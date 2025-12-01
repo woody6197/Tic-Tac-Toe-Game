@@ -147,13 +147,21 @@ function TicTacToe() {
       <div className="mb-4">
         <button
           onClick={() => setGameMode("one")}
-          className="mr-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className={`mr-2 px-4 py-2 rounded hover:bg-green-600 ${
+            gameMode === "one"
+              ? "bg-green-500 text-white border-1 border-white"
+              : "bg-green-500 text-white"
+          }`}
         >
           One Player
         </button>
         <button
           onClick={() => setGameMode("two")}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className={`px-4 py-2 rounded hover:bg-blue-600 ${
+            gameMode === "two"
+              ? "bg-blue-500 text-white border-1 border-white"
+              : "bg-blue-500 text-white"
+          }`}
         >
           Two Player
         </button>
@@ -164,15 +172,23 @@ function TicTacToe() {
         <div className="mb-4">
           <button
             onClick={() => setDifficulty("easy")}
-            className="mr-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+            className={`mr-2 px-4 py-2 rounded hover:bg-yellow-600 ${
+              difficulty === "easy"
+                ? "bg-yellow-500 text-white border-1 border-white"
+                : "bg-yellow-500 text-white"
+            }`}
           >
             Easy
           </button>
           <button
             onClick={() => setDifficulty("hard")}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className={`px-4 py-2 rounded hover:bg-red-600 ${
+              difficulty === "hard"
+                ? "bg-red-500 text-white border-1 border-white"
+                : "bg-red-500 text-white"
+            }`}
           >
-            Hard
+            God Mode 😱
           </button>
         </div>
       )}
