@@ -147,13 +147,13 @@ function TicTacToe() {
       <div className="mb-4">
         <button
           onClick={() => setGameMode("one")}
-          className="mr-2 px-4 py-2 bg-green-500 text-white rounded"
+          className="mr-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
           One Player
         </button>
         <button
           onClick={() => setGameMode("two")}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Two Player
         </button>
@@ -164,13 +164,13 @@ function TicTacToe() {
         <div className="mb-4">
           <button
             onClick={() => setDifficulty("easy")}
-            className="mr-2 px-4 py-2 bg-yellow-500 text-white rounded"
+            className="mr-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
           >
             Easy
           </button>
           <button
             onClick={() => setDifficulty("hard")}
-            className="px-4 py-2 bg-red-500 text-white rounded"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Hard
           </button>
@@ -179,11 +179,16 @@ function TicTacToe() {
 
       {/* Dynamic Mode Message */}
       <p className="mb-4 font-semibold text-lg">
-        {gameMode === "one"
-          ? `You're playing against ${
-              difficulty === "easy" ? "Easy AI" : "Hard AI"
-            }`
-          : "Two Player Mode"}
+        {gameMode === "one" ? (
+          <>
+            You&apos;re playing against{" "}
+            <span className="text-xl animate-text-gradient bg-radial-[circle_at_center] from-[#7182ff] to-[#3cff52] bg-[length:200%] bg-clip-text text-transparent pt-8 pb-4">
+              {difficulty === "easy" ? "Easy AI" : "Hard AI"}
+            </span>
+          </>
+        ) : (
+          "Two Player Mode"
+        )}
       </p>
 
       {/* Game Board */}
@@ -200,8 +205,9 @@ function TicTacToe() {
       </div>
 
       {/* Result */}
-      <div className="text-xl animate-text-gradient bg-radial-[circle_at_center] from-[#7182ff] to-[#3cff52] bg-[length:200%] bg-clip-text text-transparent pt-8 pb-4">{status}</div>
-
+      <div className="text-xl animate-text-gradient bg-radial-[circle_at_center] from-[#7182ff] to-[#3cff52] bg-[length:200%] bg-clip-text text-transparent pt-8 pb-4">
+        {status}
+      </div>
 
       {/* Restart Button */}
       <button
