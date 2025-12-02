@@ -10,28 +10,22 @@ function TicTacToe() {
 
   function calculateWinner(squares) {
     const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8], // rows
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8], // columns
-      [0, 4, 8],
-      [2, 4, 6], // diagonals
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6],
     ];
     for (let [a, b, c] of lines) {
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return { winner: squares[a], line: [a, b, c] };
       }
     }
     return null;
   }
 
-  const winner = calculateWinner(board);
+  const result = calculateWinner(board);
+  const winner = result?.winner;
+  const winningLine = result?.line || [];
+
   const status = winner
     ? `Winner: ${winner}`
     : board.every((cell) => cell !== null)
@@ -39,11 +33,11 @@ function TicTacToe() {
     : `Next player: ${isXNext ? "X" : "O"}`;
 
   function handleClick(index) {
-    if (board[index] || winner) return;
-
+    if (board[index] || winner) return; 
     const newBoard = [...board];
     newBoard[index] = isXNext ? "X" : "O";
     setBoard(newBoard);
+    setIsXNext(!isXNext);
 
     if (gameMode === "one" && isXNext) {
       setTimeout(() => {
@@ -56,11 +50,9 @@ function TicTacToe() {
         }
       }, 500);
     }
-
-    setIsXNext(!isXNext);
   }
 
-  // Easy mode: random empty square
+  // Easy AI: random move
   function makeEasyMove(currentBoard) {
     const emptySquares = currentBoard
       .map((val, idx) => (val === null ? idx : null))
@@ -76,7 +68,7 @@ function TicTacToe() {
     setIsXNext(true);
   }
 
-  // Hard mode: Minimax algorithm
+  // Hard AI: Minimax algorithm
   function makeHardMove(currentBoard) {
     const bestMove = minimax(currentBoard, "O").index;
     const newBoard = [...currentBoard];
@@ -91,8 +83,8 @@ function TicTacToe() {
       .filter((idx) => idx !== null);
 
     const winnerCheck = calculateWinner(newBoard);
-    if (winnerCheck === "X") return { score: -10 };
-    if (winnerCheck === "O") return { score: 10 };
+    if (winnerCheck?.winner === "X") return { score: -10 };
+    if (winnerCheck?.winner === "O") return { score: 10 };
     if (availSpots.length === 0) return { score: 0 };
 
     const moves = [];
@@ -139,6 +131,18 @@ function TicTacToe() {
     setIsXNext(true);
   }
 
+  const modeMessage =
+    gameMode === "one" ? (
+      <>
+        You&apos;re playing against{" "}
+        <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+          {difficulty === "easy" ? "Easy AI" : "Hard AI"}
+        </span>
+      </>
+    ) : (
+      "Two Player Mode"
+    );
+
   return (
     <div className="flex flex-col items-center py-10">
       <h1 className="text-2xl font-bold mb-4">Tic-Tac-Toe</h1>
@@ -147,7 +151,7 @@ function TicTacToe() {
       <div className="mb-4">
         <button
           onClick={() => setGameMode("one")}
-          className={`mr-2 px-4 py-2 rounded hover:bg-green-600 ${
+          className={`mr-2 px-4 py-2 rounded hover:bg-green-600 transition ${
             gameMode === "one"
               ? "bg-green-500 text-white border-1 border-white"
               : "bg-green-500 text-white"
@@ -157,7 +161,7 @@ function TicTacToe() {
         </button>
         <button
           onClick={() => setGameMode("two")}
-          className={`px-4 py-2 rounded hover:bg-blue-600 ${
+          className={`px-4 py-2 rounded hover:bg-blue-600 transition ${
             gameMode === "two"
               ? "bg-blue-500 text-white border-1 border-white"
               : "bg-blue-500 text-white"
@@ -172,7 +176,7 @@ function TicTacToe() {
         <div className="mb-4">
           <button
             onClick={() => setDifficulty("easy")}
-            className={`mr-2 px-4 py-2 rounded hover:bg-yellow-600 ${
+            className={`mr-2 px-4 py-2 rounded hover:bg-yellow-600 transition ${
               difficulty === "easy"
                 ? "bg-yellow-500 text-white border-1 border-white"
                 : "bg-yellow-500 text-white"
@@ -182,7 +186,7 @@ function TicTacToe() {
           </button>
           <button
             onClick={() => setDifficulty("hard")}
-            className={`px-4 py-2 rounded hover:bg-red-600 ${
+            className={`px-4 py-2 rounded hover:bg-red-600 transition ${
               difficulty === "hard"
                 ? "bg-red-500 text-white border-1 border-white"
                 : "bg-red-500 text-white"
@@ -194,25 +198,21 @@ function TicTacToe() {
       )}
 
       {/* Dynamic Mode Message */}
-      <p className="mb-4 font-semibold text-lg">
-        {gameMode === "one" ? (
-          <>
-            You&apos;re playing against{" "}
-            <span className="text-xl animate-text-gradient bg-radial-[circle_at_center] from-[#7182ff] to-[#3cff52] bg-[length:200%] bg-clip-text text-transparent pt-8 pb-4">
-              {difficulty === "easy" ? "Easy AI" : "Hard AI"}
-            </span>
-          </>
-        ) : (
-          "Two Player Mode"
-        )}
-      </p>
+      <p className="mb-4 font-semibold text-lg">{modeMessage}</p>
 
       {/* Game Board */}
       <div className="grid grid-cols-3 gap-2">
         {board.map((value, index) => (
           <div
             key={index}
-            className="w-20 h-20 border flex items-center justify-center text-xl cursor-pointer hover:bg-gray-800"
+            className={`w-20 h-20 border flex items-center justify-center text-xl cursor-pointer hover:bg-gray-800 transition
+              ${
+                winningLine.includes(index)
+                  ? winner === "X"
+                    ? "text-green-500 font-bold"
+                    : "text-red-500 font-bold"
+                  : ""
+              }`}
             onClick={() => handleClick(index)}
           >
             {value}
@@ -228,7 +228,7 @@ function TicTacToe() {
       {/* Restart Button */}
       <button
         onClick={restartGame}
-        className="mt-6 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+        className="mt-6 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition"
       >
         Play again!
       </button>
