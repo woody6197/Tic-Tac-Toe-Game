@@ -1,7 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import SpinningBorderButton from "@/components/SpinningGradientBorder";
+import Scoreboard from "@/components/scoreboard";
+import { useState } from "react";
 
 export default function Home() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex flex-col-3 min-h-screen w-full justify-between items-center py-16 px-20 bg-slate-950">
@@ -14,10 +20,8 @@ export default function Home() {
           priority
         />
         <div className="flex flex-col items-center text-center">
-          <div>
-            <SpinningBorderButton />
-          </div>
-          <div className="text-white text-2xl">AI says Hi</div>
+          <SpinningBorderButton setRefreshKey={setRefreshKey} />
+          <Scoreboard refreshKey={refreshKey} />
         </div>
         <Image
           className=""

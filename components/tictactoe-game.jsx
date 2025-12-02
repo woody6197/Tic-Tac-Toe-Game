@@ -1,21 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { recordWin } from "@/app/actions/recordWin";
 
-function TicTacToe() {
-  const [board, setBoard] = React.useState(Array(9).fill(null));
-  const [isXNext, setIsXNext] = React.useState(true);
-  const [gameMode, setGameMode] = React.useState("two"); // 'one' or 'two'
-  const [difficulty, setDifficulty] = React.useState("easy"); // 'easy' or 'hard'
+function TicTacToe({ setRefreshKey }) {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [isXNext, setIsXNext] = useState(true);
+  const [gameMode, setGameMode] = useState("two");
+  const [difficulty, setDifficulty] = useState("easy");
 
   function calculateWinner(squares) {
     const lines = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6],
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
     ];
     for (let [a, b, c] of lines) {
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
         return { winner: squares[a], line: [a, b, c] };
       }
     }
@@ -60,7 +70,7 @@ function TicTacToe() {
 
     if (emptySquares.length === 0) return;
 
-    const randomIndex = 
+    const randomIndex =
       emptySquares[Math.floor(Math.random() * emptySquares.length)];
     const newBoard = [...currentBoard];
     newBoard[randomIndex] = "O";
@@ -93,9 +103,10 @@ function TicTacToe() {
       move.index = availSpots[i];
       newBoard[availSpots[i]] = player;
 
-      move.score = player === "O"
-        ? minimax(newBoard, "X").score
-        : minimax(newBoard, "O").score;
+      move.score =
+        player === "O"
+          ? minimax(newBoard, "X").score
+          : minimax(newBoard, "O").score;
 
       newBoard[availSpots[i]] = null;
       moves.push(move);
@@ -121,6 +132,24 @@ function TicTacToe() {
     }
     return moves[bestMove];
   }
+
+  useEffect(() => {
+    if (
+      (winner || board.every((cell) => cell !== null)) &&
+      gameMode === "one" &&
+      difficulty === "hard"
+    ) {
+      if (winner) {
+        const whoWon = winner === "X" ? "Player" : "AI";
+        recordWin("god", whoWon).then(() => setRefreshKey((prev) => prev + 1));
+      } else {
+        // It's a draw
+        recordWin("god", null, true).then(() =>
+          setRefreshKey((prev) => prev + 1)
+        );
+      }
+    }
+  }, [winner, board, gameMode, difficulty, setRefreshKey]);
 
   function restartGame() {
     setBoard(Array(9).fill(null));
