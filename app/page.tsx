@@ -12,7 +12,7 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex flex-col-3 min-h-screen w-full justify-between items-center py-16 px-20 bg-slate-950">
         <Image
-          className="sm:hidden"
+          className="hidden md:block"
           src="/transparent-logo.png"
           alt="Tic Tac Toe logo"
           width={300}
@@ -24,7 +24,7 @@ export default function Home() {
           <Scoreboard refreshKey={refreshKey} />
         </div>
         <Image
-          className="sm:hidden"
+          className="hidden md:block"
           src="/transparent-logo.png"
           alt="Tic Tac Toe logo"
           width={300}
