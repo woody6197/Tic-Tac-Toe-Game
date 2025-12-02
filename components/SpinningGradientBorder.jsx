@@ -2,7 +2,7 @@ import TicTacToe from "./tictactoe-game";
 
 const SpinningBorderButton = ({ setRefreshKey }) => {
   return (
-    <div className="flex flex-col h-full w-full p-12 justify-center items-center bg-slate-950 space-y-6">
+    <div className="flex flex-col h-full w-full md:p-12 justify-center items-center bg-slate-950 space-y-6">
       <div className="relative p-[2px] overflow-hidden">
         <div
           className="absolute top-1/2 left-1/2 w-[300%] h-[300%] animate-spin-slow"
