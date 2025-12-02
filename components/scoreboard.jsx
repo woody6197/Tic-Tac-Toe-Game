@@ -22,8 +22,8 @@ export default function Scoreboard({ refreshKey }) {
   }, [refreshKey]);
 
   return (
-    <div className="text-white text-2xl mt-4 p-4 rounded-lg bg-slate-800 shadow-lg">
-      <h2 className="font-bold mb-2">God Mode Scoreboard</h2>
+    <div className="text-white flex justify-between items-center text-2xl mt-4 p-4 rounded-lg bg-slate-800 shadow-lg">
+      <h2 className="font-bold text-left">God Mode Scoreboard</h2>
       <p>
         Player Wins: <span className="text-green-400">{stats.playerWins}</span> ({stats.playerPercent}%)
       </p>
