@@ -33,7 +33,7 @@ function TicTacToe() {
     : `Next player: ${isXNext ? "X" : "O"}`;
 
   function handleClick(index) {
-    if (board[index] || winner) return; 
+    if (board[index] || winner) return;
     const newBoard = [...board];
     newBoard[index] = isXNext ? "X" : "O";
     setBoard(newBoard);
@@ -60,7 +60,7 @@ function TicTacToe() {
 
     if (emptySquares.length === 0) return;
 
-    const randomIndex =
+    const randomIndex = 
       emptySquares[Math.floor(Math.random() * emptySquares.length)];
     const newBoard = [...currentBoard];
     newBoard[randomIndex] = "O";
@@ -93,13 +93,9 @@ function TicTacToe() {
       move.index = availSpots[i];
       newBoard[availSpots[i]] = player;
 
-      if (player === "O") {
-        const result = minimax(newBoard, "X");
-        move.score = result.score;
-      } else {
-        const result = minimax(newBoard, "O");
-        move.score = result.score;
-      }
+      move.score = player === "O"
+        ? minimax(newBoard, "X").score
+        : minimax(newBoard, "O").score;
 
       newBoard[availSpots[i]] = null;
       moves.push(move);

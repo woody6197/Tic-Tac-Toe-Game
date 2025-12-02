@@ -13,8 +13,11 @@ export default function Home() {
           height={300}
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center">
-          <SpinningBorderButton />
+        <div className="flex flex-col items-center text-center">
+          <div>
+            <SpinningBorderButton />
+          </div>
+          <div className="text-white text-2xl">AI says Hi</div>
         </div>
         <Image
           className=""
