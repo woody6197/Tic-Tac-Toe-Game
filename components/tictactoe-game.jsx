@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { recordWin } from "@/app/actions/recordWin";
 
 function TicTacToe({ setRefreshKey, onGodModeChange }) {
@@ -8,6 +8,11 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
   const [isXNext, setIsXNext] = useState(true);
   const [gameMode, setGameMode] = useState("two");
   const [difficulty, setDifficulty] = useState("easy");
+
+  // Accessibility: opt-in keyboard-only mode
+  const [keyboardOnly, setKeyboardOnly] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const boardRef = useRef(null);
 
   function calculateWinner(squares) {
     const lines = [
@@ -163,7 +168,48 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
   function restartGame() {
     setBoard(Array(9).fill(null));
     setIsXNext(true);
+    setFocusedIndex(0);
   }
+
+  // Keyboard-only play (active when keyboardOnly === true)
+  function handleKeyDown(e) {
+    if (!keyboardOnly) return;
+
+    if (
+      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(
+        e.key
+      )
+    ) {
+      e.preventDefault();
+      let newIndex = focusedIndex;
+
+      if (e.key === "ArrowUp") {
+        newIndex = focusedIndex - 3 >= 0 ? focusedIndex - 3 : focusedIndex;
+      }
+      if (e.key === "ArrowDown") {
+        newIndex = focusedIndex + 3 < 9 ? focusedIndex + 3 : focusedIndex;
+      }
+      if (e.key === "ArrowLeft") {
+        newIndex = focusedIndex % 3 !== 0 ? focusedIndex - 1 : focusedIndex;
+      }
+      if (e.key === "ArrowRight") {
+        newIndex =
+          (focusedIndex + 1) % 3 !== 0 ? focusedIndex + 1 : focusedIndex;
+      }
+      if (e.key === "Enter") {
+        handleClick(focusedIndex);
+      }
+
+      setFocusedIndex(newIndex);
+    }
+  }
+
+  // When toggling keyboardOnly on, focus the board for immediate use
+  useEffect(() => {
+    if (keyboardOnly && boardRef.current) {
+      boardRef.current.focus();
+    }
+  }, [keyboardOnly]);
 
   const modeMessage =
     gameMode === "one" ? (
@@ -237,14 +283,43 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
         </div>
       )}
 
-      {/* Dynamic Mode Message */}
+      {/* Accessibility toggle */}
+      <div className="mb-2 items-center gap-3">
+        <label className="inline-flex items-center cursor-pointer select-none">
+          <input
+            type="checkbox"
+            className="accent-purple-600 w-4 h-4"
+            checked={keyboardOnly}
+            onChange={(e) => setKeyboardOnly(e.target.checked)}
+            aria-label="Enable keyboard-only controls"
+          />
+          <span className="ml-2 text-sm text-slate-200">Keyboard Controls</span>
+        </label>
+        {keyboardOnly && (
+          <span className="text-xs text-slate-400">
+            <div>Use arrow keys to move, Enter to place.</div>
+          </span>
+        )}
+      </div>
+
       <p className="mb-4 font-semibold text-lg">{modeMessage}</p>
 
-      {/* Game Board */}
-      <div className="grid grid-cols-3 gap-2">
+      <div role="status" aria-live="polite" className="sr-only">
+        {status}
+      </div>
+
+      {/* Game Board (focusable only when keyboardOnly is on) */}
+      <div
+        ref={boardRef}
+        tabIndex={keyboardOnly ? 0 : -1}
+        onKeyDown={handleKeyDown}
+        className="grid grid-cols-3 gap-2 focus:outline-none"
+        aria-label="Tic-Tac-Toe board"
+      >
         {board.map((value, index) => (
-          <div
+          <button
             key={index}
+            onClick={() => handleClick(index)}
             className={`w-20 h-20 border flex items-center justify-center text-xl cursor-pointer hover:bg-gray-800 transition
               ${
                 winningLine.includes(index)
@@ -252,11 +327,17 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
                     ? "text-green-500 font-bold"
                     : "text-red-500 font-bold"
                   : ""
-              }`}
-            onClick={() => handleClick(index)}
+              } ${
+              keyboardOnly && focusedIndex === index
+                ? "ring-2 ring-purple-400"
+                : ""
+            }`}
+            aria-label={`Cell ${index + 1}, ${
+              value ? `occupied by ${value}` : "empty"
+            }`}
           >
             {value}
-          </div>
+          </button>
         ))}
       </div>
 
