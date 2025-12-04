@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { recordWin } from "@/app/actions/recordWin";
 
-function TicTacToe({ setRefreshKey }) {
+function TicTacToe({ setRefreshKey, onGodModeChange }) {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [gameMode, setGameMode] = useState("two");
@@ -133,6 +133,15 @@ function TicTacToe({ setRefreshKey }) {
     return moves[bestMove];
   }
 
+  // Notify parent whenever God Mode toggles
+  useEffect(() => {
+    const isGod = gameMode === "one" && difficulty === "hard";
+    if (typeof onGodModeChange === "function") {
+      onGodModeChange(isGod);
+    }
+  }, [gameMode, difficulty, onGodModeChange]);
+
+  // Record win/draw for God mode games
   useEffect(() => {
     if (
       (winner || board.every((cell) => cell !== null)) &&
@@ -175,7 +184,13 @@ function TicTacToe({ setRefreshKey }) {
       {/* Mode Selection */}
       <div className="mb-4">
         <button
-          onClick={() => setGameMode("one")}
+          onClick={() => {
+            setGameMode("one");
+            // Ensure a sensible default when switching to one-player
+            if (difficulty !== "easy" && difficulty !== "hard") {
+              setDifficulty("easy");
+            }
+          }}
           className={`mr-2 px-4 py-2 rounded hover:bg-green-600 transition ${
             gameMode === "one"
               ? "bg-green-500 text-white border-1 border-white"
