@@ -9,7 +9,6 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
   const [gameMode, setGameMode] = useState("two");
   const [difficulty, setDifficulty] = useState("easy");
 
-  // Accessibility: opt-in keyboard-only mode
   const [keyboardOnly, setKeyboardOnly] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const boardRef = useRef(null);
@@ -83,7 +82,7 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
     setIsXNext(true);
   }
 
-  // Hard AI: Minimax algorithm
+  // Hard AI:
   function makeHardMove(currentBoard) {
     const bestMove = minimax(currentBoard, "O").index;
     const newBoard = [...currentBoard];
@@ -204,7 +203,6 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
     }
   }
 
-  // When toggling keyboardOnly on, focus the board for immediate use
   useEffect(() => {
     if (keyboardOnly && boardRef.current) {
       boardRef.current.focus();

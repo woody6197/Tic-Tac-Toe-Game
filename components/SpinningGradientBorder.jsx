@@ -4,7 +4,6 @@ import TicTacToe from "./tictactoe-game";
 const SpinningBorderButton = ({ setRefreshKey }) => {
   const [isGodMode, setIsGodMode] = useState(false);
 
-  // Choose colors based on whether God Mode is active
   const spinnerBackground = isGodMode
     ? "conic-gradient(rgba(255, 165, 0, 0.9) 0deg, rgba(255, 69, 0, 0.9) 60deg, transparent 150deg)" // orange -> red
     : "conic-gradient(rgba(244, 114, 182, 0.8) 0deg, rgba(192, 132, 252, 0.8) 60deg, transparent 150deg)"; // original pink/purple
