@@ -225,7 +225,7 @@ function TicTacToe({ setRefreshKey, onGodModeChange }) {
 
   return (
     <div className="flex flex-col items-center py-10">
-      <h1 className="text-2xl font-bold mb-4">Tic-Tac-Toe</h1>
+      <h1 className="text-2xl font-bold mb-4">TicTacToe</h1>
 
       {/* Mode Selection */}
       <div className="mb-4">
